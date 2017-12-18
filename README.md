@@ -1,2 +1,1 @@
-# dev-blog
-https://luizfranca.github.io/dev-blog
+# tutorial-alexa-skills
