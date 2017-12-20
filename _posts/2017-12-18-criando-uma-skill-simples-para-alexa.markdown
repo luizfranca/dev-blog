@@ -6,14 +6,15 @@ description:
 img: 
 tags: [Alexa Skills, Restfull, Self-hosted]
 ---
-Neste tutorial você vai aprender como criar uma skill simples para alexa. Abaixo tem uma lista do que vai ser necessário para você criar sua primeira Amazon Skill para Alexa. Neste tutorial nós iremos prover o serviço em um servidor rest, mas uma outra possibilidade é usar o serviço da [Amazon Web Services](https://aws.amazon.com). 
+Neste tutorial você vai aprender como criar uma skill simples para alexa que tem dois intents: um para falar "Hello, world" e outra que diz a temperatura da cidade requisitada. Abaixo tem uma lista do que vai ser necessário para você criar sua primeira skill para Alexa. Neste tutorial nós iremos prover o serviço em um servidor rest, mas uma outra possibilidade é usar o serviço da [Amazon Web Services](https://aws.amazon.com) conhecido como lambda. 
 
 ### Considerações
 
-Para criar esse tutorial usei algumas ferramentas que não são obrigatórias.
+Para criar esse tutorial usei algumas ferramentas que não são obrigatórias usar.
 
 - Os códigos no terminal serão escritos considerando o sistema operacional MacOS;
-- O serviço provido será usando node.js, pode-se usar outros frameworks. Desde que se tenha a biblioteca da alexa.
+- O serviço provido será usando node.js, pode-se usar outros frameworks. Desde que se tenha a biblioteca da alexa;
+- Uma biblioteca para recuperar a temperatura chamada [weatherjs](http://weatherjs.com).
 
 ### Requisitos
 - Conta na [Amazon](https://www.amazon.com);
@@ -49,7 +50,7 @@ server.start();
 
 Esse código ira iniciar o servidor. Caso uma porta não seja fornecida pelo servidor ele irá usar a porta 3001.
 
-4- Crie um arquivo chamado Procfile com o seguinte código
+4- Crie um arquivo chamado Procfile com o seguinte código:
 
 {% highlight bash %}
 web: node server.js
@@ -60,6 +61,7 @@ web: node server.js
 {% highlight bash %}
 pasta-projeto/apps/nome-skill/$ npm init
 pasta-projeto/apps/nome-skill/$ npm install alexa-app –save
+pasta-projeto/apps/nome-skill/$ npm install weather-js
 {% endhighlight %}
 
 6- Depois crie um arquivo chamado index.js e coloque o seguinte código nele:
@@ -68,39 +70,70 @@ pasta-projeto/apps/nome-skill/$ npm install alexa-app –save
 module.change_code = 1;
 'use strict';
 
+var weather = require('weather-js');
 var alexa = require('alexa-app');
 var app = new alexa.app('hello_world');
 
 
 app.launch( function(request, response) {
-	response.say('Welcome to your alexa skill')
-	.reprompt('Ask alexa to say hello world!')
-	.shouldEndSession(false);
+    response.say('Welcome to your alexa skill')
+    .reprompt('Ask alexa to say hello world!')
+    .shouldEndSession(false);
 } );
 
 
 app.error = function(exception, request, response) {
-	console.log(exception)
-	console.log(request);
-	console.log(response);	
-	response.say('Sorry an error occured ' + error.message);
+    console.log(exception)
+    console.log(request);
+    console.log(response);  
+    response.say('Sorry an error occured ' + error.message);
 };
 
 app.intent('sayHelloWorld',
   {
     "utterances":[ 
-		"say hello world",
-		"tell me hello world"]
+        "say hello world",
+        "tell me hello world"]
   },
   function(request,response) {
     response.say("Hello, world!");
   }
 );
 
+app.intent('sayWeather',
+  {
+    "slots" : {"city" : "AMAZON.US_CITY"},
+    "utterances":[ 
+        "what is the weather in {-|city}",
+        "tell me the weather in {-|city}",
+        "how is the weather in {-|city}"]
+  },
+  function(request,response) {
+    var city = request.slot("city");
+    return new Promise(function(resolve, reject) {
+      weather.find({search: city, degreeType: 'C'}, (err, result) => {
+        console.log("The city requested is " + city);
+        if(err || result.length == 0) {
+          response.say("The weather in " + city + " could not be found!").send();
+          resolve();
+        } else {
+          var forecast = result[1].current.temperature;
+          var location = result[0].location.name;
+          response.say("The weather in " + location + " is " + forecast + " degrees celsius").send();
+          resolve();
+        }
+      });
+    });
+  }
+);6705,61
+
+
 module.exports = app;
 {% endhighlight %}
 
-Esse código contem a skill que você está criando. Na linha onde tem `app.intent('sayHelloWorld')` fica o nome do seu intent. Você pode criar várias intents na mesma skill. As `utterances` são as formas de chamar aquela intent, e você pode colocar quantas achar necessário. O parametro passado para o método `response.say` é o que a alexa vai responder para o usuário. Você pode criar sua logica nesse trecho, podendo fazer chamadas para outros serviços ou funções que você tenha criado.
+Esse código contem a skill que você está criando. Nas linhas onde tem `app.intent('sayHelloWorld',` e `app.intent('sayWeather',` ficam as suas intents. O método intent recebe três parâmetros. O primeiro é o nome da sua intent, o segundo é um dicionário que contém os `slots` e as `utterances` necessárias para sua intent, e o terceiro parâmetro é a função chamada quando sua intent for invocada. Você pode criar várias intents na mesma skill. Os `slots` são usados como variaveis. As `utterances` são as formas de chamar aquela intent, e você pode colocar quantas achar necessário. O parametro passado para o método `response.say` é o que a alexa vai responder para o usuário.
+
+Nessa aplicação nós criamos duas intents uma que diz "Hello, world" e outra que diz a temperatura. Na primeira intent, sayHelloWorld, nós temos uma resposta simples, se alguma das utterances forem chamadas diga para o usuário "Hello, world". A segunda intent nós recuperamos o conteudo do slot em `var city = request.slot("city");`. Em seguida nós fazemos a requizição para a api de weather. Como essa é uma chamada asincrona, nos temos que colocar a chamada em um promise para ao final da requizição, a resposta ser enviada para a alexa.
 
 7- Com o serviço criado, nós colocaremos o serviço no servidor. Como mencionado acima, nesse tutorial estaremos usando o heroku, mas sinta-se a vontade pra usar qualquer servidor de sua escolha. Crie uma app no heroku e coloque o código que você acabou de criar nela. Existem várias formas de "subir" o seu código para o servidor, mas eu recomendo conectar com um repositório no Github. Para testar você deve abrir `https://nomdeApp.herokuapp.com/alexa/nome_skill`. Você deve ver algo como isso:
 
