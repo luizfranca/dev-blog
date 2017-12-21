@@ -13,12 +13,12 @@ Neste tutorial você vai aprender como criar uma skill simples para alexa que te
 Para criar esse tutorial usei algumas ferramentas que não são obrigatórias usar.
 
 - Os códigos no terminal serão escritos considerando o sistema operacional MacOS;
-- O serviço provido será usando node.js, pode-se usar outros frameworks. Desde que se tenha a biblioteca da alexa;
+- O serviço provido será usando node.js. Pode-se usar outros frameworks, desde que se tenha a biblioteca da alexa;
 - Uma biblioteca para recuperar a temperatura chamada [weatherjs](http://weatherjs.com).
 
 ### Requisitos
 - Conta na [Amazon](https://www.amazon.com);
-- Um servidor para armazenar o serviço da skill, nesse tutorial será usado o [Heroku](https://www.heroku.com) (ou outro servidor da sua escolha);
+- Um servidor para armazenar o serviço da skill. Nesse tutorial será usado o [Heroku](https://www.heroku.com) (ou outro servidor da sua escolha);
 - Node.js instalado;
 
 ### Serviço
@@ -133,7 +133,7 @@ module.exports = app;
 
 Esse código contem a skill que você está criando. Nas linhas onde tem `app.intent('sayHelloWorld',` e `app.intent('sayWeather',` ficam as suas intents. O método intent recebe três parâmetros. O primeiro é o nome da sua intent, o segundo é um dicionário que contém os `slots` e as `utterances` necessárias para sua intent, e o terceiro parâmetro é a função chamada quando sua intent for invocada. Você pode criar várias intents na mesma skill. Os `slots` são usados como variaveis. As `utterances` são as formas de chamar aquela intent, e você pode colocar quantas achar necessário. O parametro passado para o método `response.say` é o que a alexa vai responder para o usuário.
 
-Nessa aplicação nós criamos duas intents uma que diz "Hello, world" e outra que diz a temperatura. Na primeira intent, sayHelloWorld, nós temos uma resposta simples, se alguma das utterances forem chamadas diga para o usuário "Hello, world". A segunda intent nós recuperamos o conteudo do slot em `var city = request.slot("city");`. Em seguida nós fazemos a requizição para a api de weather. Como essa é uma chamada asincrona, nos temos que colocar a chamada em um promise para ao final da requizição, a resposta ser enviada para a alexa.
+Nessa aplicação nós criamos duas intents uma que diz "Hello, world" e outra que diz a temperatura. Na primeira intent, sayHelloWorld, nós temos uma resposta simples, se alguma das utterances forem chamadas diga para o usuário "Hello, world". A segunda intent nós recuperamos o conteudo do slot em `var city = request.slot("city");`. Em seguida nós fazemos a requisição para a api de weather. Como essa é uma chamada assíncrona, nos temos que colocar a chamada em um promise para, ao final da requisição, a resposta ser enviada para a Alexa.
 
 7- Com o serviço criado, nós colocaremos o serviço no servidor. Como mencionado acima, nesse tutorial estaremos usando o heroku, mas sinta-se a vontade pra usar qualquer servidor de sua escolha. Crie uma app no heroku e coloque o código que você acabou de criar nela. Existem várias formas de "subir" o seu código para o servidor, mas eu recomendo conectar com um repositório no Github. Para testar você deve abrir `https://nomdeApp.herokuapp.com/alexa/nome_skill`. Você deve ver algo como isso:
 
