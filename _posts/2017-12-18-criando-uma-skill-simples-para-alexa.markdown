@@ -150,13 +150,27 @@ Para criar uma skill no site da amazon, você deve "logar" com a sua conta [ness
 3. **Name**: preencha com o nome da sua skill
 4. **Invocation Name**: preencha com a forma que você deseja chamar sua skill na forma `Alexa ask nome da skill` (ex.: Alexa ask simple alexa skill). Isso irar abrir a skill.
 5. Em seguida salve e vá para a próxima página.
+
+![Alexa skill primeira página]({{site.baseurl}}/assets/img/alexa-skill-page1.png)
+
 6. **Intent Schema**: você deve preencher com o que aparece no campo `Schema` que aparece no seu serviço. Veja a image acima como exemplo.
 7. **Sample Utterances**: preencha com o texto que aparece no campo `Utterances` que aparece no seu serviço. Veja a image acima como exemplo.
+
+![Alexa skill segunda página]({{site.baseurl}}/assets/img/alexa-skill-page2.png)
+
 8. Aperte next, na próxima página em `Service Endpoint Type:` selecione HTTPS
 9. No campo **Default** coloque o link do seu serviço (ex.: https://nomdeApp.herokuapp.com/alexa/nome_skill) e precione next
+
+![Alexa skill segunda página]({{site.baseurl}}/assets/img/alexa-skill-page3.png)
+
 10. Para o certificado selecione `My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority`, se você tiver usando o heroku. E pressione next.
 11. Na próxima página pressione next de novo.
+
+![Alexa skill segunda página]({{site.baseurl}}/assets/img/alexa-skill-page4.png)
+
 12. Nessa página preencha com os dados referentes a função da sua skill. Depois vá para a próxima página e faça o mesmo.
 13. Ao completar, salve. Se você preencheu tudo corretamente, o botão `Submit for certification` deve está "clicavel".
+
+![Alexa skill segunda página]({{site.baseurl}}/assets/img/alexa-skill-page5.png)
 
 Se a sua conta da amazon for a mesma do seu echo, a skill deve ser carregada para seu echo automaticamente. Para testar basta você falar "Alexa ask nomde skill" para abrir a skill, depois chame por sua intent usando uma das `utterances` cadastradas.
