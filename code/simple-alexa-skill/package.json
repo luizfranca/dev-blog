@@ -1,0 +1,25 @@
+{
+  "name": "simple-alexa-skill",
+  "version": "1.0.0",
+  "description": "Tutorial para criar uma alexa skill simples.",
+  "main": "server.js",
+  "dependencies": {
+    "alexa-app-server": "^3.0.1",
+    "weather-js": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luizfranca/simple-alexa-skill.git"
+  },
+  "author": "Luiz França",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luizfranca/simple-alexa-skill/issues"
+  },
+  "homepage": "https://github.com/luizfranca/simple-alexa-skill#readme"
+}
